@@ -1,14 +1,21 @@
 version: "3.9"
+services:
+  mariadb:
+     container_name: mariadb
+     build: requirements/mariadb
+     image: mariadb
+     env_file: .env
+     ports:
+       - 3306:3306
+     #networks:
+      # - inception
+     #volumes:
+     #  - database:/var/lib/mysql
+     restart: unless-stopped
+#volumes:
+  #${PWD}/mariadb/:/var/lib/mysql/
 
-mariadb:
-  container_name: mariadb
-  build: requirements/mariadb
-  #image: mariadb
-  env_file: .env
-  ports:
-    - 3306:3306
-  networks:
-    - inception
-  volumes:
-    - database:/var/lib/mysql
-  restart: unless-stopped
+networks:
+  inception:
+    name: inception
+    driver: bridge
