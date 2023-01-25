@@ -1,17 +1,33 @@
-# Utiliser l'image Alpine Linux
-FROM alpine:latest
+FROM	alpine:3.14
 
-# Mettre à jour les paquets et installer NGINX
-RUN apk update && \
-    apk add nginx
+RUN		apk update
+RUN		apk upgrade
 
-# Configurer NGINX pour utiliser TLSv1.2 ou TLSv1.3 uniquement
-RUN sed -i 's/ssl_protocols.*/ssl_protocols  TLSv1.2 TLSv1.3;/' /etc/nginx/nginx.conf
+#==== NGINX ===================================================================#
+RUN		apk add nginx
 
-# Exposer le port 80 et 443
-EXPOSE 80 443
+RUN		mkdir -p /var/www/html/
 
-# Lancer NGINX au démarrage du container
-CMD ["nginx", "-g", "daemon off;"]
+COPY	conf/default.conf /etc/nginx/http.d/default.conf
 
-#CMD ["sh", "-c", "while true; do echo hello; sleep 1; done", "&&", "tail", "-f", "/dev/null"]
+#==== OPENSSL =================================================================#
+RUN		apk add openssl
+RUN		mkdir -p /etc/nginx/ssl
+
+RUN		openssl req \
+		-newkey rsa:4096 \
+		-x509 \
+		-sha256 \
+		-days 365 \
+		-nodes \
+		-subj "/C=FR/ST=PACA/L=Nice/O=42/OU=kcatrix/CN=localhost" \
+		-keyout /etc/nginx/ssl/inception.key \
+		-out /etc/nginx/ssl/inception.cert
+
+#==== OPENRC ==================================================================#
+RUN		apk add openrc
+RUN		rc-update add nginx default
+
+#==============================================================================#
+EXPOSE	443
+CMD		["nginx", "-g", "daemon off;"]
