@@ -10,7 +10,7 @@ RUN		mkdir -p /var/www/html/
 
 COPY	conf/default.conf /etc/nginx/http.d/default.conf
 
-# COPY	conf/index.html /var/www/html
+COPY	conf/index.html /var/www/html
 
 #==== OPENSSL =================================================================#
 RUN		apk add openssl

@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Dockerfile                                         :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: kcatrix <kcatrix@student.42nice.fr>      +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/04/08 14:32:52 by kcatrix          #+#    #+#              #
-#    Updated: 2022/04/08 21:29:06 by kcatrix         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 FROM	alpine:3.14
 
 RUN		apk update
@@ -56,12 +44,12 @@ RUN		adduser 				-u 82 -D -S -G www-data www-data
 RUN		chmod 777 				-R /var/www/html
 RUN		chown 					-R www-data:www-data /var/www/html
 
-# COPY	./conf/wp-config.php	./
-# COPY	./conf/entrypoint.sh	./
-# RUN		chmod +x 				./entrypoint.sh
+COPY	./conf/wp-config.php	./
+COPY	./conf/entrypoint.sh	./
+RUN		chmod +x 				./entrypoint.sh
 
 
-# ENTRYPOINT						["./entrypoint.sh"]
+ENTRYPOINT						["./entrypoint.sh"]
 
 #==============================================================================#
 EXPOSE	9000
